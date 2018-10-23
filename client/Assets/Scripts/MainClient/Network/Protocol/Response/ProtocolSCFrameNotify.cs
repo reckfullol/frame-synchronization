@@ -1,27 +1,22 @@
-﻿using Google.Protobuf;
-using System.IO;
+﻿using System.IO;
+using Google.Protobuf;
+using MainClient.GameSync;
 
-namespace MainClient
-{
-    class ProtocolSCFrameNotify : Protocol
-    {
-        public SCFrameNotify data = new SCFrameNotify();
+namespace MainClient.Network.Protocol.Response {
+    internal class ProtocolSCFrameNotify : Protocol {
+        private SCFrameNotify _data = new SCFrameNotify();
 
-        public override ushort GetMessageID()
-        {
+        public override ushort GetMessageID() {
             return 4;
         }
-        public override void Process()
-        {
-            GameSyncManager.Instance.OnFreamAsyn(data);
+        public override void Process() {
+            GameSyncManager.Instance.OnFreamAsyn(_data);
         }
-        public override void Serialize(MemoryStream stream)
-        {
-            data.WriteTo(stream);
+        public override void Serialize(MemoryStream stream) {
+            _data.WriteTo(stream);
         }
-        public override void DeSerialize(MemoryStream stream)
-        {
-            data = SCFrameNotify.Parser.ParseFrom(stream);
+        public override void DeSerialize(MemoryStream stream) {
+            _data = SCFrameNotify.Parser.ParseFrom(stream);
         }
     }
 }

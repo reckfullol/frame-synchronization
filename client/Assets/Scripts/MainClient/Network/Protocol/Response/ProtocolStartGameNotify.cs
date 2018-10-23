@@ -1,27 +1,22 @@
-﻿using Google.Protobuf;
-using System.IO;
+﻿using System.IO;
+using Google.Protobuf;
+using MainClient.GameSync;
 
-namespace MainClient
-{
-    class ProtocolStartGameNotify : Protocol
-    {
-        public SCStartGame data = new SCStartGame();
+namespace MainClient.Network.Protocol.Response {
+    internal class ProtocolStartGameNotify : Protocol {
+        private SCStartGame _data = new SCStartGame();
 
-        public override ushort GetMessageID()
-        {
+        public override ushort GetMessageID() {
             return 2;
         }
-        public override void Process()
-        {
-            GameSyncManager.Instance.StartBattle(data);
+        public override void Process() {
+            GameSyncManager.Instance.StartBattle(_data);
         }
-        public override void Serialize(MemoryStream stream)
-        {
-            data.WriteTo(stream);
+        public override void Serialize(MemoryStream stream) {
+            _data.WriteTo(stream);
         }
-        public override void DeSerialize(MemoryStream stream)
-        {
-            data = SCStartGame.Parser.ParseFrom(stream);
+        public override void DeSerialize(MemoryStream stream) {
+            _data = SCStartGame.Parser.ParseFrom(stream);
         }
     }
 }
