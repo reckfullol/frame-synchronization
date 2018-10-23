@@ -1,6 +1,4 @@
-﻿using CommonLib;
-using System;
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using CommonLib.Utility;
 using MainClient.Camera;
