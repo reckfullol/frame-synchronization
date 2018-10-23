@@ -1,13 +1,11 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using CommonLib;
+using CommonLib.Utility;
+using UnityEngine;
 
-namespace MainClient
-{
-    public class CharacterConfig
-    {
-        public UInt32 characterID = 0;
+namespace MainClient.Character {
+    public class CharacterConfig {
+        public uint characterID = 0;
         public string characterName = "";
         public string resName = "";
         public float runSpeed = 0f;
@@ -16,8 +14,7 @@ namespace MainClient
         public Dictionary<CharacterAction, CharacterActionConfig> actionConfig = new Dictionary<CharacterAction, CharacterActionConfig>();
     }
 
-    public class CharacterActionConfig
-    {
+    public class CharacterActionConfig {
         public CharacterAction actionType = CharacterAction.UNDEFINED;
         public bool canRotate = false;
         public byte frameCount = 0;
@@ -25,20 +22,18 @@ namespace MainClient
         public List<CharacterAction> nextActions = new List<CharacterAction>();
     }
 
-    public class CharacterConfigManager : Singleton<CharacterConfigManager>
-    {
-        private Dictionary<UInt32, CharacterConfig> _characterConfigs = new Dictionary<uint, CharacterConfig>();
+    public class CharacterConfigManager : Singleton<CharacterConfigManager> {
+        private Dictionary<uint, CharacterConfig> _characterConfigs = new Dictionary<uint, CharacterConfig>();
 
-        public override bool Init()
-        {
-            var characterConfig = new CharacterConfig();
+        public override bool Init() {
+            CharacterConfig characterConfig = new CharacterConfig();
             characterConfig.characterID = 1;
             characterConfig.characterName = "虞姬";
             characterConfig.resName = "yuji";
             characterConfig.runSpeed = 10f;
             characterConfig.attackContinueTime = 0.5f;
 
-            var actionConfig = new CharacterActionConfig();
+            CharacterActionConfig actionConfig = new CharacterActionConfig();
             actionConfig.actionType = CharacterAction.IDLE;
             actionConfig.canRotate = false;
             actionConfig.frameCount = 32;
@@ -79,10 +74,8 @@ namespace MainClient
             return true;
         }
 
-        public CharacterConfig GetCharacterConfig(UInt32 id)
-        {
-            if (_characterConfigs.ContainsKey(id))
-            {
+        public CharacterConfig GetCharacterConfig(uint id) {
+            if (_characterConfigs.ContainsKey(id)) {
                 return _characterConfigs[id];
             }
             Debug.LogError("can't find characterConfigs with id: " + id.ToString());

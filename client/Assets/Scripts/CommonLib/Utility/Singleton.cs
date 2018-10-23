@@ -1,40 +1,25 @@
 ﻿using System;
 
-namespace CommonLib
-{
-    public abstract class BaseSingleton
-    {
+namespace CommonLib.Utility {
+    public abstract class BaseSingleton {
         public abstract bool Init();
         public abstract void Uninit();
     }
 
-    public abstract class Singleton<T> : BaseSingleton where T : new()
-    {
-        private static readonly T _instance = new T();
-
-        protected Singleton()
-        {
-            if (null != _instance)
-            {
-                throw new ApplicationException(_instance.ToString() + @" can not be created again.");
+    public abstract class Singleton<T> : BaseSingleton where T : new() {
+        protected Singleton() {
+            if (null != Instance) {
+                throw new ApplicationException(Instance.ToString() + @" can not be created again.");
             }
         }
 
-        public static T Instance
-        {
-            get
-            {
-                return _instance;
-            }
-        }
+        public static T Instance { get; } = new T();
 
-        public override bool Init()
-        {
+        public override bool Init() {
             return true;
         }
 
-        public override void Uninit()
-        {
+        public override void Uninit() {
         }
 
     }

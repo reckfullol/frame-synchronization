@@ -1,20 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
 using CommonLib;
+using CommonLib.Utility;
+using MainClient.GameSync;
+using UnityEngine;
 
-namespace MainClient
-{
-    class InputHandle
-    {
-        private static Dictionary<UInt32, float> _Dir2RotateAng = null;
+namespace MainClient.GameInput {
+    internal class InputHandle {
+        private static Dictionary<uint, float> _dir2RotateAng = null;
 
-        public InputHandle()
-        {
-            if (_Dir2RotateAng == null)
-            {
-                _Dir2RotateAng = new Dictionary<UInt32, float>
-                {
+        public InputHandle() {
+            if (_dir2RotateAng == null) {
+                _dir2RotateAng = new Dictionary<uint, float> {
                     { InputDefine.MOVE_UP, 0f },
                     { InputDefine.MOVE_UP | InputDefine.MOVE_RIGHT, 45f },
                     { InputDefine.MOVE_RIGHT, 90f },
@@ -28,111 +25,91 @@ namespace MainClient
         }
 
         private IInputListener _listener = null;
-        private UInt32 directionKey = 0;
-        public void AddInputListener(IInputListener listener)
-        {
+        private uint _directionKey = 0;
+        public void AddInputListener(IInputListener listener) {
             _listener = listener;
         }
 
-        public void Update(float delta)
-        {
-            if (Input.GetKeyDown(KeyCode.A))
-            {
+        public void Update(float delta) {
+            if (Input.GetKeyDown(KeyCode.A)) {
                 DirectionKeyDown(InputDefine.MOVE_LEFT);
             }
-            if (Input.GetKeyDown(KeyCode.D))
-            {
+            if (Input.GetKeyDown(KeyCode.D)) {
                 DirectionKeyDown(InputDefine.MOVE_RIGHT);
             }
-            if (Input.GetKeyDown(KeyCode.W))
-            {
+            if (Input.GetKeyDown(KeyCode.W)) {
                 DirectionKeyDown(InputDefine.MOVE_UP);
             }
-            if (Input.GetKeyDown(KeyCode.S))
-            {
+            if (Input.GetKeyDown(KeyCode.S)) {
                 DirectionKeyDown(InputDefine.MOVE_DOWN);
             }
 
-            if (Input.GetKeyUp(KeyCode.A))
-            {
+            if (Input.GetKeyUp(KeyCode.A)) {
                 DirectionKeyUp(InputDefine.MOVE_LEFT);
             }
-            if (Input.GetKeyUp(KeyCode.D))
-            {
+            if (Input.GetKeyUp(KeyCode.D)) {
                 DirectionKeyUp(InputDefine.MOVE_RIGHT);
             }
-            if (Input.GetKeyUp(KeyCode.W))
-            {
+            if (Input.GetKeyUp(KeyCode.W)) {
                 DirectionKeyUp(InputDefine.MOVE_UP);
             }
-            if (Input.GetKeyUp(KeyCode.S))
-            {
+            if (Input.GetKeyUp(KeyCode.S)) {
                 DirectionKeyUp(InputDefine.MOVE_DOWN);
             }
 
 
 
 
-            if (Input.GetKeyDown(KeyCode.J))
-            {
+            if (Input.GetKeyDown(KeyCode.J)) {
                 FunctionKeyDown(InputDefine.FUNCTION_KEY1);
             }
         }
 
-        private void OnMove(UInt32 lastKey, UInt32 newKey)
-        {
-            if (lastKey != newKey)
-            {
-                if (newKey == InputDefine.STOP)
-                {
-                    DirctionTouch(0f, MoveType.STOP);
-                }
-                else
-                {
-                    DirctionTouch(_Dir2RotateAng[newKey], MoveType.MOVE_ANGE);
-                }
+        private void OnMove(uint lastKey, uint newKey) {
+            if (lastKey == newKey) {
+                return;
+            }
+            if (newKey == InputDefine.STOP) {
+                DirctionTouch(0f, MoveType.STOP);
+            } else {
+                DirctionTouch(_dir2RotateAng[newKey], MoveType.MOVE_ANGE);
             }
         }
-        private void DirectionKeyUp(UInt32 keyCode)
-        {
-            UInt32 lastKey = directionKey;
-            directionKey &= ~keyCode;
-            OnMove(lastKey, directionKey);
+        private void DirectionKeyUp(uint keyCode) {
+            uint lastKey = _directionKey;
+            _directionKey &= ~keyCode;
+            OnMove(lastKey, _directionKey);
         }
-        private void DirectionKeyDown(UInt32 keyCode)
-        {
-            UInt32 lastKey = directionKey;
-            // 抬起反向按键
-            switch (keyCode)
-            {
+        private void DirectionKeyDown(uint keyCode) {
+            uint lastKey = _directionKey;
+            switch (keyCode) {
+                // 抬起反向按键
                 case InputDefine.MOVE_DOWN:
-                    directionKey &= ~InputDefine.MOVE_UP;
+                    _directionKey &= ~InputDefine.MOVE_UP;
                     break;
                 case InputDefine.MOVE_UP:
-                    directionKey &= ~InputDefine.MOVE_DOWN;
+                    _directionKey &= ~InputDefine.MOVE_DOWN;
                     break;
                 case InputDefine.MOVE_LEFT:
-                    directionKey &= ~InputDefine.MOVE_RIGHT;
+                    _directionKey &= ~InputDefine.MOVE_RIGHT;
                     break;
                 case InputDefine.MOVE_RIGHT:
-                    directionKey &= ~InputDefine.MOVE_LEFT;
+                    _directionKey &= ~InputDefine.MOVE_LEFT;
                     break;
             }
-            directionKey |= keyCode;
-            OnMove(lastKey, directionKey);
+
+            _directionKey |= keyCode;
+            OnMove(lastKey, _directionKey);
         }
 
-        public void DirctionTouch(float ang, MoveType moveType)
-        {
-            if (GameSyncManager.Instance.IsStepLockMode)
-            {
-                if (CommonFunction.LessZero(ang))
-                {
+        public void DirctionTouch(float ang, MoveType moveType) {
+            if (GameSyncManager.Instance.IsStepLockMode) {
+                if (CommonFunction.LessZero(ang)) {
                     ang += 360f;
                 }
                 GameSyncManager.Instance.AddKeyInfo(InputDefine.DIRCTION_KEY, 
-                    (UInt16)Mathf.FloorToInt(ang + CommonFunction.EPS), 
-                    (Byte)moveType);
+                    (ushort)Mathf.FloorToInt(ang + CommonFunction.EPS), 
+                    (byte)moveType);
                 return;
             }
 

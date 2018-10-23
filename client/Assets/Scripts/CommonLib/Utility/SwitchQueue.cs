@@ -1,60 +1,47 @@
 ﻿using System.Collections.Generic;
 
-namespace CommonLib
-{
-    public class SwitchQueue<T>
-    {
+namespace CommonLib.Utility {
+    public class SwitchQueue<T> {
 
-        private Queue<T> mConsumeQueue;
-        private Queue<T> mProduceQueue;
+        private Queue<T> _mConsumeQueue;
+        private Queue<T> _mProduceQueue;
 
-        public SwitchQueue()
-        {
-            mConsumeQueue = new Queue<T>(16);
-            mProduceQueue = new Queue<T>(16);
+        public SwitchQueue() {
+            _mConsumeQueue = new Queue<T>(16);
+            _mProduceQueue = new Queue<T>(16);
         }
 
-        public SwitchQueue(int capcity)
-        {
-            mConsumeQueue = new Queue<T>(capcity);
-            mProduceQueue = new Queue<T>(capcity);
+        public SwitchQueue(int capcity) {
+            _mConsumeQueue = new Queue<T>(capcity);
+            _mProduceQueue = new Queue<T>(capcity);
         }
 
         // producer
-        public void Push(T obj)
-        {
-            lock (mProduceQueue)
-            {
-                mProduceQueue.Enqueue(obj);
+        public void Push(T obj) {
+            lock (_mProduceQueue) {
+                _mProduceQueue.Enqueue(obj);
             }
         }
 
         // consumer.
-        public T Pop()
-        {
-
-            return (T)mConsumeQueue.Dequeue();
+        public T Pop() {
+            return (T)_mConsumeQueue.Dequeue();
         }
 
-        public bool Empty()
-        {
-            return 0 == mConsumeQueue.Count;
+        public bool Empty() {
+            return 0 == _mConsumeQueue.Count;
         }
 
-        public void Switch()
-        {
-            lock (mProduceQueue)
-            {
-                CommonFunction.Swap(ref mConsumeQueue, ref mProduceQueue);
+        public void Switch() {
+            lock (_mProduceQueue) {
+                CommonFunction.Swap(ref _mConsumeQueue, ref _mProduceQueue);
             }
         }
 
-        public void Clear()
-        {
-            lock (mProduceQueue)
-            {
-                mConsumeQueue.Clear();
-                mProduceQueue.Clear();
+        public void Clear() {
+            lock (_mProduceQueue) {
+                _mConsumeQueue.Clear();
+                _mProduceQueue.Clear();
             }
         }
     }

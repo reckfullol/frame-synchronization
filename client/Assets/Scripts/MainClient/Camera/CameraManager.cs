@@ -1,39 +1,33 @@
-﻿using CommonLib;
+﻿using CommonLib.Utility;
 using UnityEngine;
 
-namespace MainClient
-{
-    class CameraManager : Singleton<CameraManager>
-    {
+namespace MainClient.Camera {
+    internal class CameraManager : Singleton<CameraManager> {
         private Vector3 _offset;
         private Transform _cameraTrans = null;
-        private Camera _camera = null;
+        private UnityEngine.Camera _camera = null;
         private Transform _target = null;
         private Vector3 _lastTargetPosition = Vector3.zero;
 
-        public void SetCamera(Transform camera, Vector3 offset)
-        {
+        public void SetCamera(Transform camera, Vector3 offset) {
             _cameraTrans = camera;
             _offset = offset;
-            _camera = camera.gameObject.GetComponent<Camera>();
+            _camera = camera.gameObject.GetComponent<UnityEngine.Camera>();
         }
 
-        public void SetTarget(Transform target)
-        {
+        public void SetTarget(Transform target) {
             _target = target;
             _lastTargetPosition = target.position;
         }
-        public void Clear()
-        {
+        
+        public void Clear() {
             _target = null;
             _camera = null;
             _cameraTrans = null;
         }
 
-        public void Update(float delta)
-        {
-            if (_target == null || _camera == null)
-            {
+        public void Update(float delta) {
+            if (_target == null || _camera == null) {
                 return;
             }
 
@@ -41,8 +35,7 @@ namespace MainClient
 
             Vector3 dir = pos - _lastTargetPosition;
 
-            if (!CommonFunction.IsZero(dir.magnitude))
-            {
+            if (!CommonFunction.IsZero(dir.magnitude)) {
                 dir = Vector3.zero;
             }
             _cameraTrans.position += dir;
@@ -52,15 +45,8 @@ namespace MainClient
 
             dir = dest - _cameraTrans.position;
             var distence = dir.magnitude;
-            float speed = 10f;
-            if (CommonFunction.LessOrEqualZero(distence))
-            {
-                _cameraTrans.position = dest;
-            }
-            else
-            {
-                _cameraTrans.position = Vector3.Lerp(_cameraTrans.position, dest, speed * delta);
-            }
+            const float speed = 10f;
+            _cameraTrans.position = CommonFunction.LessOrEqualZero(distence) ? dest : Vector3.Lerp(_cameraTrans.position, dest, speed * delta);
         }
     }
 }

@@ -1,8 +1,6 @@
 ﻿
-namespace MainClient
-{
-    public enum CharacterAction
-    {
+namespace MainClient.Character {
+    public enum CharacterAction {
         UNDEFINED = 0,
         IDLE = 1,
         RUN = 2,
